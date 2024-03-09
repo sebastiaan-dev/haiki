@@ -1,9 +1,18 @@
-import { BASE_URL } from "@/constants";
+import { testData } from "@/assets/test-data";
+import { Article } from "@/types/article";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import json2md from "json2md";
 
-const getArticle = () =>
-  axios.get(`${BASE_URL}/test/article`).then((res) => res.data);
+const getArticle = async (): Promise<string> => {
+  // const data = axios.get(`${BASE_URL}/test/article`).then((res) => res.data);
+  const data = await new Promise<Article>((resolve) => resolve(testData));
+
+  const mdString = data.sections.reduce(
+    (acc, section) => acc.concat(json2md(section)),
+    "",
+  );
+  return mdString;
+};
 
 export const useArticle = () => {
   return useQuery({

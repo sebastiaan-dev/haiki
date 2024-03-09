@@ -62,9 +62,18 @@
 @layer base {
   * {
     @apply border-border;
-    @apply font-DraftingMono font-medium tracking-wide;
+    @apply font-DraftingMono;
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer base {
+  h1 {
+    @apply text-2xl;
+  }
+  h2 {
+    @apply text-xl;
   }
 }
