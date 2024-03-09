@@ -11,7 +11,6 @@ from chroma.db import store
 template_text = """
     You are writing the section of a scientific article for which you can only use the given documents. Write in the style of a scientific paper.
     Be extremely exact in your answer. Topic tells you what you should write about. Query tells you what you should answer. Do not include any special characters in your answer.
-    Do not write the information in a list but instead as an coherent paragraph.
     \nDocuments:
     {% for doc in documents %}
         {{ doc.content }}
@@ -29,6 +28,13 @@ template_title = """
     Do not include any special characters in your answer.
 
     \nTopic: {{topic}}
+    \nQuery: {{query}}
+    \nAnswer:
+    """
+
+template_clean_list = """
+    If there are any lists or iterations in the input, remove them and write the text as a single paragraph.
+
     \nQuery: {{query}}
     \nAnswer:
     """
@@ -94,6 +100,29 @@ def gen_section_title(item: Item, title: str):
     )
 
 
+def clean_section_text(text: str):
+    pipe = Pipeline()
+
+    pipe.add_component(
+        name="prompt", instance=PromptBuilder(template=template_clean_list)
+    )
+    pipe.add_component(name="llm", instance=OllamaGenerator(model="llama2"))
+    pipe.add_component(name="answer", instance=AnswerBuilder())
+
+    pipe.connect("prompt", "llm")
+    pipe.connect("llm.replies", "answer.replies")
+    pipe.connect("llm.metadata", "answer.meta")
+
+    return pipe.run(
+        {
+            "prompt": {
+                "query": text,
+            },
+            "answer": {"query": text},
+        }
+    )
+
+
 def gen_section_text(item: Item, title: str):
     pipe = Pipeline()
 
@@ -110,7 +139,7 @@ def gen_section_text(item: Item, title: str):
     pipe.connect("llm.metadata", "answer.meta")
     pipe.connect("retriever", "answer.documents")
 
-    return pipe.run(
+    text = pipe.run(
         {
             "embedder": {"text": f"{item['description']} {title}"},
             "prompt": {
@@ -120,3 +149,5 @@ def gen_section_text(item: Item, title: str):
             "answer": {"query": f"{item['description']} {title}"},
         }
     )
+
+    return text

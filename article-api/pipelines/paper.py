@@ -9,6 +9,37 @@ from logger import logger
 from chroma.db import store
 
 
+def paper(path: str, metadata: dict):
+    logger.info(f"Processing paper")
+
+    pipe = Pipeline()
+
+    # Add components to the pipeline
+    pipe.add_component(name="converter", instance=PyPDFToDocument())
+    pipe.add_component(
+        name="cleaner",
+        instance=DocumentCleaner(
+            remove_empty_lines=True,
+            remove_extra_whitespaces=True,
+            remove_repeated_substrings=False,
+        ),
+    )
+    pipe.add_component(
+        name="splitter",
+        instance=DocumentSplitter(split_by="passage", split_length=4, split_overlap=1),
+    )
+    pipe.add_component(name="embedder", instance=OllamaDocumentEmbedder())
+    pipe.add_component(name="writer", instance=DocumentWriter(store))
+
+    # Connect components
+    pipe.connect("converter", "cleaner")
+    pipe.connect("cleaner", "splitter")
+    pipe.connect("splitter", "embedder")
+    pipe.connect("embedder", "writer")
+
+    pipe.run({"converter": {"sources": [path], "meta": metadata}})
+
+
 def papers(path: str):
     logger.info(f"Processing papers from {path}")
 
@@ -34,7 +65,12 @@ def papers(path: str):
         instance=DocumentSplitter(split_by="passage", split_length=4, split_overlap=1),
     )
     pipe.add_component(name="embedder", instance=OllamaDocumentEmbedder())
-    pipe.add_component(name="writer", instance=DocumentWriter(store))
+    pipe.add_component(
+        name="writer",
+        instance=DocumentWriter(
+            store,
+        ),
+    )
 
     # Connect components
     pipe.connect("converter", "cleaner")

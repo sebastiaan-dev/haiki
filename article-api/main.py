@@ -1,3 +1,6 @@
+import json
+import os
+
 from dotenv import load_dotenv
 from utils.files import get_folders_from_dir
 
@@ -53,9 +56,11 @@ def create_article(topic: str, title: str):
     template = db.getTemplate(topic)
 
     generated = pl.article(title, template)
-    sections = fm.article(template, generated)
+    sections, citations = fm.article(template, generated)
 
-    return db.upsertArticle(topic, {"title": title, "sections": sections})
+    return db.upsertArticle(
+        topic, {"title": title, "sections": sections, "citations": citations}
+    )
 
 
 @app.put("/article/refine")
@@ -77,5 +82,60 @@ def create_papers(paper: CreatePaper):
     """
     for folder in get_folders_from_dir(paper.path):
         pl.papers(paper.path + "/" + folder)
+
+    return {"msg": "Request processed successfully"}
+
+
+@app.post("/paper/create")
+def create_papers():
+    """
+    Create a new paper based on a file.
+    """
+    pages = []
+
+    for index in range(1, 7):
+        # write to file
+        with open(f"_data_/scrape/page_{index}.json", "r") as f:
+            segment = json.load(f)
+            pages.extend(segment)
+
+    for dir, _, names in os.walk("_data_/scrape/pdfs/"):
+        for name in names:
+            # split name into title and extension
+            title, ext = os.path.splitext(name)
+
+            # find the paper in the pages
+
+            for paper in pages:
+                if paper["title"] == title:
+                    print(f"Found paper: {title}")
+                    metadata = {}
+                    try:
+                        metadata = {
+                            "title": title,
+                            "doi": paper["doi"],
+                            "primary_topic_name": paper["primary_topic"][
+                                "display_name"
+                            ],
+                            "primary_topic_subfield": paper["primary_topic"][
+                                "subfield"
+                            ]["display_name"],
+                            "primary_topic_field": paper["primary_topic"]["field"][
+                                "display_name"
+                            ],
+                            "primary_topic_domain": paper["primary_topic"]["domain"][
+                                "display_name"
+                            ],
+                            "cited_by_count": paper["cited_by_count"],
+                            "publication_date": paper["publication_date"],
+                        }
+                    except:
+                        metadata = {
+                            "title": title,
+                            "doi": paper["doi"],
+                        }
+
+                    pl.paper("_data_/scrape/pdfs/" + name, metadata=metadata)
+                    break
 
     return {"msg": "Request processed successfully"}
