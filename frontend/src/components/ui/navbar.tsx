@@ -3,13 +3,18 @@ import { FC } from "react";
 
 export const Navbar: FC = () => {
   return (
-    <div className="p-2 flex gap-2">
-      <Link to="/" className="[&.active]:font-bold">
-        Home
-      </Link>{" "}
-      <Link to="/about" className="[&.active]:font-bold">
-        About
-      </Link>
-    </div>
+    <nav className="flex justify-between">
+      <div className="w-1">
+        <h1 className="font-bold text-3xl ml-3"> Haiki </h1>
+      </div>
+      <div className="p-2 flex gap-4 mr-12">
+        <Link to="/" className="[&.active]:font-bold text-xl">
+          Search
+        </Link>{" "}
+        <Link to="/article" className="[&.active]:font-bold text-xl">
+          Article
+        </Link>
+      </div>
+    </nav>
   );
 };
