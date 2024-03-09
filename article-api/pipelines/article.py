@@ -6,22 +6,9 @@ from haystack_integrations.components.retrievers.chroma import ChromaEmbeddingRe
 from haystack_integrations.components.embedders.ollama import OllamaTextEmbedder
 from haystack_integrations.components.generators.ollama import OllamaGenerator
 
-
 from chroma.db import store
 
-
-@dataclass
-class Item:
-    type: str
-    description: str
-    items: list["Item"]
-
-
-def article(topic: str, item: Item):
-    if item.type != "section":
-        raise ValueError("The top level item must be a section")
-
-    template = """
+template = """
     You are writing the section of a scientific article for which you can only use the given documents.
     Be extremely exact in your answer. Topic tells you what you should write about. Query tells you what you should answer.
     If type is title, you should write ONLY the title of the section and nothing else. If type is text, you should write the paragraph.
@@ -36,43 +23,67 @@ def article(topic: str, item: Item):
     \nAnswer:
     """
 
-    result = []
 
-    for subitem in item.items:
+@dataclass
+class Item:
+    type: str
+    description: str
+    items: list["Item"]
 
-        pipe = Pipeline()
 
-        pipe.add_component(name="embedder", instance=OllamaTextEmbedder())
-        pipe.add_component(name="retriever", instance=ChromaEmbeddingRetriever(store))
-        pipe.add_component(name="prompt", instance=PromptBuilder(template=template))
-        pipe.add_component(
-            name="llm", instance=OllamaGenerator(model="nous-hermes2:10.7b-solar-q8_0")
-        )
-        pipe.add_component(name="answer", instance=AnswerBuilder())
+@dataclass
+class Template:
+    title: str
+    sections: list[Item]
 
-        pipe.connect("embedder.embedding", "retriever.query_embedding")
-        pipe.connect("retriever", "prompt")
-        pipe.connect("prompt", "llm")
-        pipe.connect("llm.replies", "answer.replies")
-        pipe.connect("llm.metadata", "answer.meta")
-        pipe.connect("retriever", "answer.documents")
 
-        result.append(
-            pipe.run(
-                {
-                    "embedder": {
-                        "text": f"{subitem.description} {item.description} {topic}"
-                    },
-                    "prompt": {
-                        "topic": topic,
-                        "type": subitem.type,
-                        "query": f"{subitem.description} {item.description} {topic}",
-                    },
-                    "answer": {
-                        "query": f"{subitem.description} {item.description} {topic}"
-                    },
-                }
-            )
-        )
+def article(topic: str, template: Template):
 
-    return result
+    sections = []
+
+    for section in template.sections:
+        sections.append(gen_section(section, topic))
+
+    return sections
+
+
+def gen_section(section: Item, topic: str):
+    assert section.type == "section"
+
+    items = []
+
+    for subitem in section.items:
+        items.append(gen_section_item(section, subitem, topic))
+
+    return items
+
+
+def gen_section_item(section: Item, item: Item, topic: str):
+    pipe = Pipeline()
+
+    pipe.add_component(name="embedder", instance=OllamaTextEmbedder())
+    pipe.add_component(name="retriever", instance=ChromaEmbeddingRetriever(store))
+    pipe.add_component(name="prompt", instance=PromptBuilder(template=template))
+    pipe.add_component(
+        name="llm", instance=OllamaGenerator(model="nous-hermes2:10.7b-solar-q8_0")
+    )
+    pipe.add_component(name="answer", instance=AnswerBuilder())
+
+    pipe.connect("embedder.embedding", "retriever.query_embedding")
+    pipe.connect("retriever", "prompt")
+    pipe.connect("prompt", "llm")
+    pipe.connect("llm.replies", "answer.replies")
+    pipe.connect("llm.metadata", "answer.meta")
+    pipe.connect("retriever", "answer.documents")
+
+    return pipe.run(
+        {
+            "embedder": {"text": f"{item.description} {section.description} {topic}"},
+            "prompt": {
+                "topic": topic,
+                "type": item.type,
+                "query": f"{item.description} {section.description} {topic}",
+            },
+            "answer": {"query": f"{item.description} {section.description} {topic}"},
+        }
+    )
