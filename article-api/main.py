@@ -1,5 +1,5 @@
 from dotenv import load_dotenv
-
+from pipelines import Template
 from utils.files import get_folders_from_dir
 
 load_dotenv()
@@ -8,8 +8,10 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 
 import pipelines as pl
+import database as db
 
 app = FastAPI()
+
 
 
 @app.get("/article/{id}")
@@ -19,6 +21,13 @@ def get_article():
     """
     return {"article": "article"}
 
+
+@app.post("/article/createTemplate")
+def create_article_template(template:Template):
+    """
+    Create a template for different article types
+    """
+    return db.upsertTemplate(template)
 
 @app.post("/article/create")
 def create_article(item: pl.Item):
