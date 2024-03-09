@@ -4,6 +4,7 @@
         {
             "type": "section",
             "description": "summary of",
+            "el": "div",
             "items": [
                 {
                     "type": "title",
@@ -22,6 +23,7 @@
         {
             "type": "section",
             "description": "explanation of",
+            "el": "div",
             "items": [
                 {
                     "type": "title",
@@ -40,6 +42,7 @@
         {
             "type": "section",
             "description": "benefits of",
+            "el": "div",
             "items": [
                 {
                     "type": "title",
@@ -58,6 +61,7 @@
         {
             "type": "section",
             "description": "drawbacks of",
+            "el": "div",
             "items": [
                 {
                     "type": "title",
@@ -76,6 +80,7 @@
         {
             "type": "section",
             "description": "dosage of",
+            "el": "div",
             "items": [
                 {
                     "type": "title",

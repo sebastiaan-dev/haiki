@@ -1,5 +1,4 @@
 from dotenv import load_dotenv
-from pipelines import Template
 from utils.files import get_folders_from_dir
 
 load_dotenv()
@@ -14,29 +13,33 @@ import database as db
 app = FastAPI()
 
 
-@app.get("/article/{topic}/{id}")
-def get_article():
-    """
-    Fetch the article with the given id.
-    """
-    return {"article": "article"}
-
-
-@app.post("/article/createTemplate")
-def create_article_template(template: Template):
+@app.post("/template/create")
+def create_template(template: pl.Template):
     """
     Create a template for different article types
     """
     return db.upsertTemplate(template)
 
 
-@app.post("/article/create")
-def create_article(item: pl.Template):
+@app.get("/article/{topic}/{id}")
+def get_article(topic: str, id: str):
+    """
+    Fetch the article with the given id.
+    """
+    return db.getArticle(topic, id)
+
+
+@app.post("/article/{topic}/create/{title}")
+def create_article(topic: str, title: str):
     """
     Create a new article based on a article template and topic.
     """
-    generated = pl.article("creatine", item)
-    return fm.article(item, generated)
+    template = db.getTemplate(topic)
+
+    generated = pl.article(title, template)
+    sections = fm.article(template, generated)
+
+    return db.upsertArticle(topic, {"title": title, "sections": sections})
 
 
 @app.put("/article/refine")
