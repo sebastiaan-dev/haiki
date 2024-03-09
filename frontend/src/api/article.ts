@@ -1,11 +1,33 @@
-import { testData } from "@/assets/test-data";
-import { Article } from "@/types/article";
-import { useQuery } from "@tanstack/react-query";
+import { BASE_URL } from "@/constants";
+import {
+  ArticelTitelsDTO,
+  articleSchema,
+  articleTitelsDTOSchema,
+} from "@/types/article";
+import { skipToken, useQuery } from "@tanstack/react-query";
+import axios from "axios";
 import json2md from "json2md";
 
-const getArticle = async (): Promise<string> => {
-  // const data = axios.get(`${BASE_URL}/test/article`).then((res) => res.data);
-  const data = await new Promise<Article>((resolve) => resolve(testData));
+const getArticleTitles = async (topic: string): Promise<ArticelTitelsDTO> => {
+  const response = await axios.get(`${BASE_URL}/articles/${topic}`);
+
+  return articleTitelsDTOSchema.parse(response.data);
+};
+
+export const useArticleTitles = (topic?: string) => {
+  return useQuery({
+    queryKey: ["articleTitles"],
+    queryFn: topic ? () => getArticleTitles(topic) : skipToken,
+  });
+};
+
+const getArticle = async (
+  topic: string,
+  articleId: string,
+): Promise<string> => {
+  const response = await axios.get(`${BASE_URL}/article/${topic}/${articleId}`);
+
+  const data = articleSchema.parse(response.data);
 
   const mdString = data.sections.reduce(
     (acc, section) => acc.concat(json2md(section)),
@@ -14,9 +36,9 @@ const getArticle = async (): Promise<string> => {
   return mdString;
 };
 
-export const useArticle = () => {
+export const useArticle = (topic: string, articleId: string) => {
   return useQuery({
     queryKey: ["articleData"],
-    queryFn: getArticle,
+    queryFn: () => getArticle(topic, articleId),
   });
 };
