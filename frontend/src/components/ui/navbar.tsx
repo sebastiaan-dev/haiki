@@ -3,7 +3,7 @@ import { FC } from "react";
 
 export const Navbar: FC = () => {
   return (
-    <nav className="flex justify-between">
+    <nav className="flex justify-between items-center pt-3 pb-3 pl-4 pr-4">
       <div className="w-1">
         <h1 className="font-bold text-3xl ml-3"> Haiki </h1>
       </div>

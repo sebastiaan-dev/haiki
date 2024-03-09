@@ -1,4 +1,5 @@
 import { useArticle } from "@/api/article";
+import { Citations } from "@/components/ui/citations";
 import { createLazyFileRoute } from "@tanstack/react-router";
 import Markdown from "react-markdown";
 
@@ -15,6 +16,7 @@ function Article() {
     <div className="flex flex-row justify-center">
       <div className="flex flex-col mt-20 w-2/4 h-full items-center">
         <Markdown
+          className="mb-10"
           components={{
             h1(props) {
               return (
@@ -26,21 +28,21 @@ function Article() {
             },
             h2(props) {
               return (
-                <div className="w-4/5">
+                <div>
                   <h2 className="text-4xl mt-10 " {...props} />
                 </div>
               );
             },
             p(props) {
               return (
-                <div className="w-4/5">
+                <div>
                   <p className="text-xl font-medium mt-5" {...props} />
                 </div>
               );
             },
             ol(props) {
               return (
-                <div className="w-4/5">
+                <div>
                   <ol className="text-xl font-medium mt-5" {...props} />
                 </div>
               );
@@ -56,6 +58,7 @@ function Article() {
         >
           {data}
         </Markdown>
+        <Citations />
       </div>
     </div>
   );

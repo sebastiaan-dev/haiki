@@ -17,6 +17,7 @@ export const sectionSchema = z.object({
 export const articleSchema = z.object({
   title: z.string(),
   sections: z.array(sectionSchema),
+  citations: z.array(z.string()),
 });
 
 export type Article = z.infer<typeof articleSchema>;

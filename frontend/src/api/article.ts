@@ -24,21 +24,30 @@ export const useArticleTitles = (topic?: string) => {
 const getArticle = async (
   topic: string,
   articleId: string,
-): Promise<string> => {
+  markdown: boolean
+): Promise<any> => {
   const response = await axios.get(`${BASE_URL}/article/${topic}/${articleId}`);
 
   const data = articleSchema.parse(response.data);
 
+  if (!markdown) {
+    return data;
+  }
+
   const mdString = data.sections.reduce(
     (acc, section) => acc.concat(json2md(section)),
-    "",
+    ""
   );
   return mdString;
 };
 
-export const useArticle = (topic: string, articleId: string) => {
+export const useArticle = (
+  topic: string,
+  articleId: string,
+  markdown = true
+) => {
   return useQuery({
-    queryKey: ["articleData"],
-    queryFn: () => getArticle(topic, articleId),
+    queryKey: ["articleData", markdown],
+    queryFn: () => getArticle(topic, articleId, markdown),
   });
 };

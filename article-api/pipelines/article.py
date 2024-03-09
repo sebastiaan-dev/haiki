@@ -85,7 +85,9 @@ def gen_section_title(item: Item, title: str):
     pipe = Pipeline()
 
     pipe.add_component(name="prompt", instance=PromptBuilder(template=template_title))
-    pipe.add_component(name="llm", instance=OllamaGenerator(model="llama2"))
+    pipe.add_component(
+        name="llm", instance=OllamaGenerator(model="nous-hermes2:10.7b-solar-q8_0")
+    )
     pipe.add_component(name="answer", instance=AnswerBuilder())
 
     pipe.connect("prompt", "llm")
@@ -109,7 +111,9 @@ def clean_section_text(text: str):
     pipe.add_component(
         name="prompt", instance=PromptBuilder(template=template_clean_list)
     )
-    pipe.add_component(name="llm", instance=OllamaGenerator(model="llama2"))
+    pipe.add_component(
+        name="llm", instance=OllamaGenerator(model="nous-hermes2:10.7b-solar-q8_0")
+    )
     pipe.add_component(name="answer", instance=AnswerBuilder())
 
     pipe.connect("prompt", "llm")
@@ -132,7 +136,9 @@ def gen_section_text(item: Item, title: str):
     pipe.add_component(name="embedder", instance=OllamaTextEmbedder())
     pipe.add_component(name="retriever", instance=ChromaEmbeddingRetriever(store))
     pipe.add_component(name="prompt", instance=PromptBuilder(template=template_text))
-    pipe.add_component(name="llm", instance=OllamaGenerator(model="llama2"))
+    pipe.add_component(
+        name="llm", instance=OllamaGenerator(model="nous-hermes2:10.7b-solar-q8_0")
+    )
     pipe.add_component(name="answer", instance=AnswerBuilder())
 
     pipe.connect("embedder.embedding", "retriever.query_embedding")
