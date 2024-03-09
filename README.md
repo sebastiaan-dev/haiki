@@ -10,8 +10,8 @@ chroma vector database -> selfhosted
 firestore noSQL database -> google cloud
 web API -> python fast api
 frontend -> react
-llm framework -> (haystack)[https://haystack.deepset.ai]
-datasource sientific papers -> (openalex)[https://openalex.org]
+llm framework -> [haystack](https://haystack.deepset.ai)
+datasource sientific papers -> [openalex](https://openalex.org)
 LLM -> mostly ollama run localy (but interchangable)
 ollama -> local hosting llm
 
@@ -32,4 +32,4 @@ bun run dev
 ## Templates
 
 Templates can be created using the appropriate endpoint, they follow
-the structure outlined in: 
+the structure outlined in 'pipelines/sample_template.json'.
