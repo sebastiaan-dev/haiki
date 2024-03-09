@@ -11,6 +11,7 @@ from chroma.db import store
 template_text = """
     You are writing the section of a scientific article for which you can only use the given documents. Write in the style of a scientific paper.
     Be extremely exact in your answer. Topic tells you what you should write about. Query tells you what you should answer. Do not include any special characters in your answer.
+    Don't reply with a confirmation and immediately start writing the answer.
     \nDocuments:
     {% for doc in documents %}
         {{ doc.content }}
@@ -25,7 +26,7 @@ template_title = """
     You are writing the title of a section of a scientific article. Write in the style of a scientific paper. The article will be published in an encyclopedia.
     Give a concise and informative title based on the query. Shorter is better and preferred.
     Topic tells you the subject of the article. Query tells you the specific focus of the section.
-    Do not include any special characters in your answer.
+    Do not include any special characters in your answer, do NOT include quotes, only include letters or maybe a semicolon if absolutely necessary.
 
     \nTopic: {{topic}}
     \nQuery: {{query}}
@@ -34,6 +35,8 @@ template_title = """
 
 template_clean_list = """
     If there are any lists or iterations in the input, remove them and write the text as a single paragraph.
+    Keep the text as close to the original as possible. Keep the text as scientific as possible.
+    Don't reply with a confirmation and immediately start writing the answer.
 
     \nQuery: {{query}}
     \nAnswer:
