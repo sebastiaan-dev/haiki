@@ -7,7 +7,7 @@ export const Route = createLazyFileRoute("/article")({
 });
 
 function Article() {
-  const { data, isError } = useArticle();
+  const { data, isError } = useArticle("supplement", "matcha");
 
   if (isError) return "Failed to load article";
 
@@ -17,7 +17,12 @@ function Article() {
         <Markdown
           components={{
             h1(props) {
-              return <h1 className="text-4xl font-bold " {...props} />;
+              return (
+                <h1
+                  className="text-4xl font-bold mb-5 tracking-wider"
+                  {...props}
+                />
+              );
             },
             h2(props) {
               return (
