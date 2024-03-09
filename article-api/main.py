@@ -8,7 +8,6 @@ from utils.files import get_folders_from_dir
 
 load_dotenv()
 
-from pipelines import Template
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
