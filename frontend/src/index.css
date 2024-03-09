@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    --background: 25 54% 96%;
     --foreground: 20 14.3% 4.1%;
     --card: 0 0% 100%;
     --card-foreground: 20 14.3% 4.1%;
@@ -50,10 +50,30 @@
 }
 
 @layer base {
+  @font-face {
+    font-family: "DraftingMono";
+    font-style: bold;
+    font-weight: 400;
+    font-display: swap;
+    src: url(/fonts/DraftingMono-ExtraLight.ttf) format("ttf");
+  }
+}
+
+@layer base {
   * {
     @apply border-border;
+    @apply font-DraftingMono;
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer base {
+  h1 {
+    @apply text-2xl;
+  }
+  h2 {
+    @apply text-xl;
   }
 }

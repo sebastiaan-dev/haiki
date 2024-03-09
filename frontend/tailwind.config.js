@@ -16,6 +16,10 @@ module.exports = {
         "2xl": "1400px",
       },
     },
+    fontFamily: {
+      DraftingMono: ["DrafringMono"],
+    },
+
     extend: {
       colors: {
         border: "hsl(var(--border))",

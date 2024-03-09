@@ -1,9 +1,13 @@
 from dotenv import load_dotenv
+from starlette.responses import JSONResponse
+
 from utils.files import get_folders_from_dir
 
 load_dotenv()
 
+from pipelines import Template
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 import pipelines as pl
@@ -12,6 +16,10 @@ import database as db
 
 app = FastAPI()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins="*"
+)
 
 @app.post("/template/create")
 def create_template(template: pl.Template):
@@ -79,3 +87,10 @@ def create_papers(paper: CreatePaper):
         pl.papers(paper.path + "/" + folder)
 
     return {"msg": "Request processed successfully"}
+
+@app.get("/topics")
+def get_topics():
+    """
+    Get all the hot topics
+    """
+    return JSONResponse(content=["Creatine", "Ayaska", "THC", "Ethanol"])
