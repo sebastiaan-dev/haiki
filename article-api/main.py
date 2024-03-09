@@ -21,26 +21,13 @@ def get_article():
 
 
 @app.post("/article/create")
-def create_article():
+def create_article(item: pl.Item):
     """
     Create a new article based on a article template and topic.
     """
     # template = get_article_template()
     # parts = extract_template_parts(template)
-    return pl.article(
-        "creatine",
-        {
-            "type": "section",
-            "description": "benefits of",
-            "items": [
-                {
-                    "type": "title",
-                    "description": "The this is the title of the section.",
-                },
-                {"type": "text", "description": "The benefits of the compound."},
-            ],
-        },
-    )
+    return pl.article("creatine", item)
 
 
 @app.put("/article/refine")

@@ -1,2 +1,2 @@
-from .paper import papers
-from .article import article
+from .paper import *
+from .article import *
