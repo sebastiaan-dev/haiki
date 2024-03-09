@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from dataclasses_json import dataclass_json
 
 from haystack import Pipeline
 from haystack.components.builders import PromptBuilder, AnswerBuilder
@@ -31,13 +32,11 @@ template_title = """
     \nAnswer:
     """
 
-
 @dataclass
 class Item:
     type: str
     description: str
     items: list["Item"]
-
 
 @dataclass
 class Template:
