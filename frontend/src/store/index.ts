@@ -5,7 +5,7 @@ interface ArticleState {
   title?: string; // Matcha Creatine ect.
   articleMarkdown?: string;
 
-  setTopic: (topic: string) => void;
+  setTopic: (topic?: string) => void;
   setTitle: (title: string) => void;
   setArticleMarkdown: (markdown: string) => void;
 }
