@@ -1,0 +1,75 @@
+{
+    "version": "1",
+    "items": [
+        {
+            "type": "section",
+            "description": "summary of",
+            "items": [
+                {
+                    "type": "title",
+                    "description": "This is the title of the article."
+                },
+                {
+                    "type": "text",
+                    "description": "This is the abstract of the article."
+                }
+            ]
+        },
+        {
+            "type": "section",
+            "description": "explanation of",
+            "items": [
+                {
+                    "type": "title",
+                    "description": "The this is the title of the section."
+                },
+                {
+                    "type": "text",
+                    "description": "Describe in broad terms what the compound is."
+                }
+            ]
+        },
+        {
+            "type": "section",
+            "description": "benefits of",
+            "items": [
+                {
+                    "type": "title",
+                    "description": "The this is the title of the section."
+                },
+                {
+                    "type": "text",
+                    "description": "The benefits of the compound."
+                }
+            ]
+        },
+        {
+            "type": "section",
+            "description": "drawbacks of",
+            "items": [
+                {
+                    "type": "title",
+                    "description": "The title of the section."
+                },
+                {
+                    "type": "text",
+                    "description": "The drawbacks of the compound."
+                }
+            ]
+        },
+        {
+            "type": "section",
+            "description": "dosage of",
+            "items": [
+                {
+                    "type": "title",
+                    "description": "The this is the title of the section."
+                },
+                {
+                    "type": "text",
+                    "description": "The dosage of the compound."
+                }
+            ]
+        }
+    ]
+}

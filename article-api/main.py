@@ -25,7 +25,22 @@ def create_article():
     """
     Create a new article based on a article template and topic.
     """
-    return {"Hello": "World"}
+    # template = get_article_template()
+    # parts = extract_template_parts(template)
+    return pl.article(
+        "creatine",
+        {
+            "type": "section",
+            "description": "benefits of",
+            "items": [
+                {
+                    "type": "title",
+                    "description": "The this is the title of the section.",
+                },
+                {"type": "text", "description": "The benefits of the compound."},
+            ],
+        },
+    )
 
 
 @app.put("/article/refine")
@@ -45,7 +60,7 @@ def create_papers(paper: CreatePaper):
     """
     Create a new paper based on a file.
     """
-    get_folders_from_dir(paper.path)
-    # pl.papers(paper.path)
+    for folder in get_folders_from_dir(paper.path):
+        pl.papers(paper.path + "/" + folder)
 
     return {"msg": "Request processed successfully"}
