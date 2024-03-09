@@ -30,6 +30,22 @@ def getArticle(topic: str, title: str):
         return {"message": "No such document!"}
 
 
+def getArticleTitles(topic: str):
+    docs = db.collection(f"articles-{topic}").stream()
+    titles = []
+    for doc in docs:
+        titles.append(doc.id)
+    return titles
+
+
+def getArticles(topic: str):
+    docs = db.collection(f"articles-{topic}").stream()
+    articles = []
+    for doc in docs:
+        articles.append(doc.to_dict())
+    return articles
+
+
 def upsertTemplate(template: Template):
     doc_ref = db.collection("templates").document(template.title)
     # print(template.to_json())

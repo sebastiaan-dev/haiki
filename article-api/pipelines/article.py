@@ -11,6 +11,7 @@ from chroma.db import store
 template_text = """
     You are writing the section of a scientific article for which you can only use the given documents. Write in the style of a scientific paper.
     Be extremely exact in your answer. Topic tells you what you should write about. Query tells you what you should answer. Do not include any special characters in your answer.
+    Do not write the information in a list but instead as an coherent paragraph.
     \nDocuments:
     {% for doc in documents %}
         {{ doc.content }}

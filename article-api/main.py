@@ -29,6 +29,22 @@ def get_article(topic: str, id: str):
     return db.getArticle(topic, id)
 
 
+@app.get("/articles/{topic}")
+def get_articles(topic: str):
+    """
+    Fetch all articles for the given topic.
+    """
+    return db.getArticles(topic)
+
+
+@app.get("/articles/{topic}/title")
+def get_article_titles(topic: str):
+    """
+    Fetch all article titles for the given topic.
+    """
+    return db.getArticleTitles(topic)
+
+
 @app.post("/article/{topic}/create/{title}")
 def create_article(topic: str, title: str):
     """
