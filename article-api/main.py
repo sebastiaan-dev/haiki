@@ -36,7 +36,6 @@ def get_article(topic: str, id: str):
     """
     return db.getArticle(topic, id)
 
-
 @app.get("/articles/{topic}")
 def get_articles(topic: str):
     """
@@ -93,4 +92,4 @@ def get_topics():
     """
     Get all the hot topics
     """
-    return JSONResponse(content=["Creatine", "Ayaska", "THC", "Ethanol"])
+    return JSONResponse(content=["Creatine", "Matcha"])
