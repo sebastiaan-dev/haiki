@@ -1,6 +1,8 @@
 import { useArticle } from "@/api/article";
+import { Button } from "@/components/ui/button";
+import { useArticleStore } from "@/store";
+import { Link, createLazyFileRoute } from "@tanstack/react-router";
 import { Citations } from "@/components/ui/citations";
-import { createLazyFileRoute } from "@tanstack/react-router";
 import Markdown from "react-markdown";
 
 export const Route = createLazyFileRoute("/article")({
@@ -8,9 +10,23 @@ export const Route = createLazyFileRoute("/article")({
 });
 
 function Article() {
-  const { data, isError } = useArticle("supplement", "matcha");
+  const title = useArticleStore((state) => state.title);
+  const topic = useArticleStore((state) => state.topic);
 
-  if (isError) return "Failed to load article";
+  const selectedArticle = title && topic;
+
+  const { data, isError } = useArticle(topic, title);
+
+  if (isError) return <>Oeps</>;
+
+  if (!selectedArticle)
+    return (
+      <div className="flex flex-row justify-center">
+        <Button>
+          <Link to="/">Please select a article</Link>
+        </Button>
+      </div>
+    );
 
   return (
     <div className="flex flex-row justify-center">

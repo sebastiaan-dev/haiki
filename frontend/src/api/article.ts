@@ -9,15 +9,16 @@ import axios from "axios";
 import json2md from "json2md";
 
 const getArticleTitles = async (topic: string): Promise<ArticelTitelsDTO> => {
-  const response = await axios.get(`${BASE_URL}/articles/${topic}`);
+  const response = await axios.get(`${BASE_URL}/articles/${topic}/title`);
 
   return articleTitelsDTOSchema.parse(response.data);
 };
 
 export const useArticleTitles = (topic?: string) => {
+  console.log("topic", topic);
   return useQuery({
     queryKey: ["articleTitles"],
-    queryFn: topic ? () => getArticleTitles(topic) : skipToken,
+    queryFn: topic ? () => getArticleTitles(topic.toLowerCase()) : skipToken,
   });
 };
 
@@ -42,12 +43,15 @@ const getArticle = async (
 };
 
 export const useArticle = (
-  topic: string,
-  articleId: string,
+  topic?: string,
+  articleId?: string,
   markdown = true
 ) => {
+  const canQuesry = topic && articleId;
   return useQuery({
     queryKey: ["articleData", markdown],
-    queryFn: () => getArticle(topic, articleId, markdown),
+    queryFn: canQuesry
+      ? () => getArticle(topic, articleId, markdown)
+      : skipToken,
   });
 };

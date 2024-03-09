@@ -150,4 +150,4 @@ def get_topics():
     """
     Get all the hot topics
     """
-    return JSONResponse(content=["Creatine", "Matcha"])
+    return JSONResponse(content=["supplement", "compounds", "condition"])
