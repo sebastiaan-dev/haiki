@@ -1,18 +1,21 @@
 {
-    "variant": "supplement",
-    "version": "1",
-    "items": [
+    "title": "supplement",
+    "sections": [
         {
             "type": "section",
             "description": "summary of",
             "items": [
                 {
                     "type": "title",
-                    "description": "This is the title of the article."
+                    "description": "Global title of the article about",
+                    "el": "h1",
+                    "items": []
                 },
                 {
                     "type": "text",
-                    "description": "This is the abstract of the article."
+                    "description": "This is the abstract of the article about",
+                    "el": "p",
+                    "items": []
                 }
             ]
         },
@@ -22,11 +25,15 @@
             "items": [
                 {
                     "type": "title",
-                    "description": "The this is the title of the section."
+                    "description": "This is the section title covering the summary text about",
+                    "el": "h2",
+                    "items": []
                 },
                 {
                     "type": "text",
-                    "description": "Describe in broad terms what the compound is."
+                    "description": "Give a broad overview about",
+                    "el": "p",
+                    "items": []
                 }
             ]
         },
@@ -36,11 +43,15 @@
             "items": [
                 {
                     "type": "title",
-                    "description": "The this is the title of the section."
+                    "description": "This is the section title covering the benefits for",
+                    "el": "h2",
+                    "items": []
                 },
                 {
                     "type": "text",
-                    "description": "The benefits of the compound."
+                    "description": "Describe the benefits of",
+                    "el": "p",
+                    "items": []
                 }
             ]
         },
@@ -50,11 +61,15 @@
             "items": [
                 {
                     "type": "title",
-                    "description": "The title of the section."
+                    "description": "This is the section title covering the drawbacks for",
+                    "el": "h2",
+                    "items": []
                 },
                 {
                     "type": "text",
-                    "description": "The drawbacks of the compound."
+                    "description": "Describe the drawbacks of",
+                    "el": "p",
+                    "items": []
                 }
             ]
         },
@@ -64,11 +79,15 @@
             "items": [
                 {
                     "type": "title",
-                    "description": "The this is the title of the section."
+                    "description": "This is the section title covering the dosage information for",
+                    "el": "h2",
+                    "items": []
                 },
                 {
                     "type": "text",
-                    "description": "The dosage of the compound."
+                    "description": "Describe the dosage information for",
+                    "el": "p",
+                    "items": []
                 }
             ]
         }

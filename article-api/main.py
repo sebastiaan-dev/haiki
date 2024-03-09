@@ -8,26 +8,26 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 
 import pipelines as pl
+import form as fm
 
 app = FastAPI()
 
 
-@app.get("/article/{id}")
+@app.get("/article/{topic}/{id}")
 def get_article():
     """
-    Fetch the article with the given id. Returns a LaTeX string.
+    Fetch the article with the given id.
     """
     return {"article": "article"}
 
 
 @app.post("/article/create")
-def create_article(item: pl.Item):
+def create_article(item: pl.Template):
     """
     Create a new article based on a article template and topic.
     """
-    # template = get_article_template()
-    # parts = extract_template_parts(template)
-    return pl.article("creatine", item)
+    generated = pl.article("creatine", item)
+    return fm.article(item, generated)
 
 
 @app.put("/article/refine")

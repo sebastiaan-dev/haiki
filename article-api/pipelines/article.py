@@ -8,17 +8,25 @@ from haystack_integrations.components.generators.ollama import OllamaGenerator
 
 from chroma.db import store
 
-template = """
+template_text = """
     You are writing the section of a scientific article for which you can only use the given documents.
     Be extremely exact in your answer. Topic tells you what you should write about. Query tells you what you should answer.
-    If type is title, you should write ONLY the title of the section and nothing else. If type is text, you should write the paragraph.
     \nDocuments:
     {% for doc in documents %}
         {{ doc.content }}
     {% endfor %}
 
     \nTopic: {{topic}}
-    \nType: {{type}}
+    \nQuery: {{query}}
+    \nAnswer:
+    """
+
+template_title = """
+    You are writing the title of a section of a scientific article. The article will be published in an encyclopedia.
+    Give a concise and informative title based on the query. Shorter is better and preferred.
+    Topic tells you the subject of the article. Query tells you the specific focus of the section.
+
+    \nTopic: {{topic}}
     \nQuery: {{query}}
     \nAnswer:
     """
@@ -38,7 +46,6 @@ class Template:
 
 
 def article(topic: str, template: Template):
-
     sections = []
 
     for section in template.sections:
@@ -53,17 +60,45 @@ def gen_section(section: Item, topic: str):
     items = []
 
     for subitem in section.items:
-        items.append(gen_section_item(section, subitem, topic))
+        match subitem.type:
+            case "title":
+                items.append(gen_section_title(subitem, topic))
+            case "text":
+                items.append(gen_section_text(subitem, topic))
 
     return items
 
 
-def gen_section_item(section: Item, item: Item, topic: str):
+def gen_section_title(item: Item, topic: str):
+    pipe = Pipeline()
+
+    pipe.add_component(name="prompt", instance=PromptBuilder(template=template_title))
+    pipe.add_component(
+        name="llm", instance=OllamaGenerator(model="nous-hermes2:10.7b-solar-q8_0")
+    )
+    pipe.add_component(name="answer", instance=AnswerBuilder())
+
+    pipe.connect("prompt", "llm")
+    pipe.connect("llm.replies", "answer.replies")
+    pipe.connect("llm.metadata", "answer.meta")
+
+    return pipe.run(
+        {
+            "prompt": {
+                "topic": topic,
+                "query": f"{item.description} {topic}",
+            },
+            "answer": {"query": f"{item.description} {topic}"},
+        }
+    )
+
+
+def gen_section_text(item: Item, topic: str):
     pipe = Pipeline()
 
     pipe.add_component(name="embedder", instance=OllamaTextEmbedder())
     pipe.add_component(name="retriever", instance=ChromaEmbeddingRetriever(store))
-    pipe.add_component(name="prompt", instance=PromptBuilder(template=template))
+    pipe.add_component(name="prompt", instance=PromptBuilder(template=template_text))
     pipe.add_component(
         name="llm", instance=OllamaGenerator(model="nous-hermes2:10.7b-solar-q8_0")
     )
@@ -78,12 +113,11 @@ def gen_section_item(section: Item, item: Item, topic: str):
 
     return pipe.run(
         {
-            "embedder": {"text": f"{item.description} {section.description} {topic}"},
+            "embedder": {"text": f"{item.description} {topic}"},
             "prompt": {
                 "topic": topic,
-                "type": item.type,
-                "query": f"{item.description} {section.description} {topic}",
+                "query": f"{item.description} {topic}",
             },
-            "answer": {"query": f"{item.description} {section.description} {topic}"},
+            "answer": {"query": f"{item.description} {topic}"},
         }
     )
