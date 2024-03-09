@@ -12,13 +12,15 @@ export const Route = createLazyFileRoute("/article")({
 function Article() {
   const title = useArticleStore((state) => state.title);
   const topic = useArticleStore((state) => state.topic);
+  console.log("title", title);
+  console.log("topic", topic);
 
   const selectedArticle = title && topic;
 
-  const { data, isError } = useArticle(topic, title);
+  const { data, isError, failureReason } = useArticle(topic, title);
 
-  if (isError) return <>Oeps</>;
-
+  if (isError) return <>{failureReason}</>;
+  console.log(data);
   if (!selectedArticle)
     return (
       <div className="flex flex-row justify-center">

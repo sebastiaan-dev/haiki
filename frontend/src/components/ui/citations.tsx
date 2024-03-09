@@ -1,17 +1,21 @@
 import { useArticle } from "@/api/article";
+import { useArticleStore } from "@/store";
 import "@citation-js/plugin-doi";
 import cite from "citation-js";
 import { useEffect, useState } from "react";
 
 export const Citations = () => {
-  const { data } = useArticle("supplement", "matcha", false);
+  const title = useArticleStore((state) => state.title);
+  const topic = useArticleStore((state) => state.topic);
+
+  const { data } = useArticle(title, topic, false);
   const [cites, setCites] = useState<string[]>([]);
 
   useEffect(() => {
     if (!data) return;
 
     const promises = [...new Set(data.citations)].map((data) =>
-      cite.async(data)
+      cite.async(data),
     );
     Promise.all(promises).then((resolved) => {
       setCites(resolved);

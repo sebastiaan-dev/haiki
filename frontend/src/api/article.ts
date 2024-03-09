@@ -25,7 +25,7 @@ export const useArticleTitles = (topic?: string) => {
 const getArticle = async (
   topic: string,
   articleId: string,
-  markdown: boolean
+  markdown: boolean,
 ): Promise<any> => {
   const response = await axios.get(`${BASE_URL}/article/${topic}/${articleId}`);
 
@@ -37,7 +37,7 @@ const getArticle = async (
 
   const mdString = data.sections.reduce(
     (acc, section) => acc.concat(json2md(section)),
-    ""
+    "",
   );
   return mdString;
 };
@@ -45,7 +45,7 @@ const getArticle = async (
 export const useArticle = (
   topic?: string,
   articleId?: string,
-  markdown = true
+  markdown = true,
 ) => {
   const canQuesry = topic && articleId;
   return useQuery({
