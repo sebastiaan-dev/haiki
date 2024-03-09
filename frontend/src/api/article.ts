@@ -38,9 +38,10 @@ const getArticle = async (
 };
 
 export const useArticle = (topic?: string, articleId?: string) => {
+  console.log(topic, articleId);
+  const canQuesry = topic && articleId;
   return useQuery({
     queryKey: ["articleData"],
-    queryFn:
-      topic && articleId ? () => getArticle(topic, articleId) : skipToken,
+    queryFn: canQuesry ? () => getArticle(topic, articleId) : skipToken,
   });
 };

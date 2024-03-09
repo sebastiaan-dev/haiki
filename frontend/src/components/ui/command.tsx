@@ -46,8 +46,10 @@ const CommandInput = React.forwardRef<
   CommandDialogInputProps
 >(({ className, badges, ...props }, ref) => (
   <div className="flex items-center border-b px-3" cmdk-input-wrapper="">
-    {badges.map((page) => (
-      <Badge className="mr-2">{page}</Badge>
+    {badges.map((index, page) => (
+      <Badge key={index} className="mr-2">
+        {page}
+      </Badge>
     ))}
     <MagnifyingGlassIcon className="ml-2 mr-2 h-4 w-4 shrink-0 opacity-50" />
     <CommandPrimitive.Input

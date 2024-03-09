@@ -29,7 +29,7 @@ export const SearchBar: FC = () => {
 
     if (topic) {
       setTitle(value);
-      navigate({ to: "/article" });
+      void navigate({ to: "/article" });
     }
     setTopic(value);
     setSearchQuery("");
