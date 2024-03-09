@@ -1,16 +1,17 @@
 from dotenv import load_dotenv
 from starlette.responses import JSONResponse
 
-from pipelines import Template
 from utils.files import get_folders_from_dir
 
 load_dotenv()
 
+from pipelines import Template
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 import pipelines as pl
+import form as fm
 import database as db
 
 app = FastAPI()
@@ -20,30 +21,49 @@ app.add_middleware(
     allow_origins="*"
 )
 
-
-@app.get("/article/{id}")
-def get_article():
-    """
-    Fetch the article with the given id. Returns a LaTeX string.
-    """
-    return {"article": "article"}
-
-
-@app.post("/article/createTemplate")
-def create_article_template(template:Template):
+@app.post("/template/create")
+def create_template(template: pl.Template):
     """
     Create a template for different article types
     """
     return db.upsertTemplate(template)
 
-@app.post("/article/create")
-def create_article(item: pl.Item):
+
+@app.get("/article/{topic}/{id}")
+def get_article(topic: str, id: str):
+    """
+    Fetch the article with the given id.
+    """
+    return db.getArticle(topic, id)
+
+
+@app.get("/articles/{topic}")
+def get_articles(topic: str):
+    """
+    Fetch all articles for the given topic.
+    """
+    return db.getArticles(topic)
+
+
+@app.get("/articles/{topic}/title")
+def get_article_titles(topic: str):
+    """
+    Fetch all article titles for the given topic.
+    """
+    return db.getArticleTitles(topic)
+
+
+@app.post("/article/{topic}/create/{title}")
+def create_article(topic: str, title: str):
     """
     Create a new article based on a article template and topic.
     """
-    # template = get_article_template()
-    # parts = extract_template_parts(template)
-    return pl.article("creatine", item)
+    template = db.getTemplate(topic)
+
+    generated = pl.article(title, template)
+    sections = fm.article(template, generated)
+
+    return db.upsertArticle(topic, {"title": title, "sections": sections})
 
 
 @app.put("/article/refine")
