@@ -1,6 +1,7 @@
 from dotenv import load_dotenv
 from starlette.responses import JSONResponse
 
+from pipelines import Template
 from utils.files import get_folders_from_dir
 
 load_dotenv()
@@ -10,6 +11,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 import pipelines as pl
+import database as db
 
 app = FastAPI()
 
@@ -17,6 +19,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins="*"
 )
+
 
 @app.get("/article/{id}")
 def get_article():
@@ -26,12 +29,21 @@ def get_article():
     return {"article": "article"}
 
 
+@app.post("/article/createTemplate")
+def create_article_template(template:Template):
+    """
+    Create a template for different article types
+    """
+    return db.upsertTemplate(template)
+
 @app.post("/article/create")
-def create_article():
+def create_article(item: pl.Item):
     """
     Create a new article based on a article template and topic.
     """
-    return {"Hello": "World"}
+    # template = get_article_template()
+    # parts = extract_template_parts(template)
+    return pl.article("creatine", item)
 
 
 @app.put("/article/refine")
@@ -51,8 +63,8 @@ def create_papers(paper: CreatePaper):
     """
     Create a new paper based on a file.
     """
-    get_folders_from_dir(paper.path)
-    # pl.papers(paper.path)
+    for folder in get_folders_from_dir(paper.path):
+        pl.papers(paper.path + "/" + folder)
 
     return {"msg": "Request processed successfully"}
 

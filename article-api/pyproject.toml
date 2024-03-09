@@ -15,6 +15,9 @@ python-dotenv = "^1.0.1"
 chroma-haystack = "^0.15.0"
 pypdf = "^4.1.0"
 ollama-haystack = "^0.0.5"
+google-cloud-firestore = "^2.15.0"
+firebase-admin = "^6.4.0"
+dataclasses-json = "^0.6.4"
 
 
 [build-system]

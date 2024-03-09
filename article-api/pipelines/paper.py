@@ -1,8 +1,3 @@
-import os
-
-from chroma import ChromaDocumentStore
-from chromadb.config import Settings
-
 from haystack import Pipeline
 from haystack.components.converters import PyPDFToDocument
 from haystack.components.preprocessors import DocumentCleaner, DocumentSplitter
@@ -11,17 +6,7 @@ from haystack_integrations.components.embedders.ollama import OllamaDocumentEmbe
 
 from utils.files import get_paths_from_dir
 from logger import logger
-
-"""
-Configure the document store used to store and query papers.
-"""
-settings = Settings(
-    chroma_client_auth_provider="chromadb.auth.token.TokenAuthClientProvider",
-    chroma_client_auth_credentials=os.getenv("VECTOR_DB_TOKEN"),
-)
-store = ChromaDocumentStore(
-    host=os.getenv("VECTOR_DB_HOST"), collection_name="papers_v1.2", settings=settings
-)
+from chroma.db import store
 
 
 def papers(path: str):
@@ -45,7 +30,8 @@ def papers(path: str):
         ),
     )
     pipe.add_component(
-        name="splitter", instance=DocumentSplitter(split_by="passage", split_length=1)
+        name="splitter",
+        instance=DocumentSplitter(split_by="passage", split_length=4, split_overlap=1),
     )
     pipe.add_component(name="embedder", instance=OllamaDocumentEmbedder())
     pipe.add_component(name="writer", instance=DocumentWriter(store))
@@ -57,3 +43,5 @@ def papers(path: str):
     pipe.connect("embedder", "writer")
 
     pipe.run({"converter": {"sources": file_paths}})
+
+    logger.info(f"Processed {len(file_paths)} papers from {path}")
