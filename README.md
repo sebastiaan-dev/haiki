@@ -19,15 +19,15 @@ These templates define the sections, titles and paragraphs which should be fille
 
 api back end
 
-'''sh
+```sh
 uvicorn main:app --reload
-'''
+```
 
 frontend
 
-'''sh
+```sh
 bun run dev
-'''
+```
 
 ## Templates
 
