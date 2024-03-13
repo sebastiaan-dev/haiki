@@ -6,14 +6,14 @@ These templates define the sections, titles and paragraphs which should be fille
 
 ## Infrastructure
 
-chroma vector database -> selfhosted
-firestore noSQL database -> google cloud
-web API -> python fast api
-frontend -> react
-llm framework -> [haystack](https://haystack.deepset.ai)
-datasource sientific papers -> [openalex](https://openalex.org)
-LLM -> mostly ollama run localy (but interchangable)
-ollama -> local hosting llm
+- chroma vector database -> selfhosted
+- firestore noSQL database -> google cloud
+- web API -> python fast api
+- frontend -> react
+- llm framework -> [haystack](https://haystack.deepset.ai)
+- datasource sientific papers -> [openalex](https://openalex.org)
+- LLM -> mostly ollama run localy (but interchangable)
+- ollama -> local hosting llm
 
 ## Usage
 
